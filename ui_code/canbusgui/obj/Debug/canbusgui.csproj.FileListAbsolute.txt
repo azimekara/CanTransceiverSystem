@@ -1,0 +1,10 @@
+C:\Users\Azime\source\repos\canbusgui\canbusgui\bin\Debug\canbusgui.exe
+C:\Users\Azime\source\repos\canbusgui\canbusgui\bin\Debug\canbusgui.pdb
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.csproj.AssemblyReference.cache
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.csproj.SuggestedBindingRedirects.cache
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.Form1.resources
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.Properties.Resources.resources
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.csproj.GenerateResource.cache
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.csproj.CoreCompileInputs.cache
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.exe
+C:\Users\Azime\source\repos\canbusgui\canbusgui\obj\Debug\canbusgui.pdb
