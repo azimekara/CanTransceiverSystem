@@ -26,7 +26,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-CAN_FilterTypeDef canfilterconfig;
+CAN_FilterTypeDef 		canfilterconfig;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -48,32 +48,32 @@ UART_HandleTypeDef huart1;
 /* USER CODE BEGIN PV */
 uint8_t 	 		RxData[21];
 uint8_t 	 		TxData[21];
-unsigned int 		baudrateThousand,
-			 	 	baudrateHundred,
-					baudrateTen,
-					baudrateUnit;
-uint8_t      		myIDstring[3];
-unsigned int 		myID;
-unsigned int 		canBaudrate;
-uint32_t     		i =0;
+unsigned int 			baudrateThousand,
+			 	baudrateHundred,
+				baudrateTen,
+				baudrateUnit;
+uint8_t      			myIDstring[3];
+unsigned int 			myID;
+unsigned int 			canBaudrate;
+uint32_t     			i =0;
 uint8_t  	 		Data1String[2],
-		 	 	 	Data2String[2],
-					Data3String[2],
-					Data4String[2],
-					Data5String[2],
-					Data6String[2],
-					Data7String[2],
-					Data8String[2];
-unsigned int 		Data1,
-			 	 	Data2,
-					Data3,
-					Data4,
-					Data5,
-					Data6,
-					Data7,
-					Data8;
-CAN_TxHeaderTypeDef TxHeader;
-CAN_RxHeaderTypeDef RxHeader;
+		 	 	Data2String[2],
+				Data3String[2],
+				Data4String[2],
+				Data5String[2],
+				Data6String[2],
+				Data7String[2],
+				Data8String[2];
+unsigned int 			Data1,
+			 	Data2,
+				Data3,
+				Data4,
+				Data5,
+				Data6,
+				Data7,
+				Data8;
+CAN_TxHeaderTypeDef 		TxHeader;
+CAN_RxHeaderTypeDef 		RxHeader;
 uint32_t 			TxMailbox;
 uint8_t 			canTxData[8],
         			canRxData[8];
@@ -161,7 +161,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		 HAL_CAN_Start(&hcan);
 
 		 memset(RxData,0,21);
-	 }
+	 }else
+	 {
 
 	 sprintf(myIDstring,"%c%c%c",RxData[0],RxData[1],RxData[2]);
 	 sscanf(myIDstring,"%03X",&myID);
@@ -219,7 +220,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		 }
 		 memset(RxData,0,21);
 	 }
-
+    }
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
