@@ -735,7 +735,7 @@ namespace canbusgui
                 char[] d8r = { rxbuf[19], rxbuf[20] };
                 string d8ful = new string(d8r);
 
-                receivedatagrid.Rows.Add(idful, rxbuf[4], rxbuf[5], d1ful, d2ful, d3ful, d4ful, d5ful,d6ful,d7ful,d8ful);
+                receivedatagrid.Rows.Add(idful, rxbuf[3], rxbuf[4], d1ful, d2ful, d3ful, d4ful, d5ful,d6ful,d7ful,d8ful);
                 j++;
                 receivecountbox.Text = j.ToString();
             }
