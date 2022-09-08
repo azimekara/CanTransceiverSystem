@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
-  **************************
+  ******************************************************************************
   * @file           : main.c
   * @brief          : Main program body
-  **************************
+  ******************************************************************************
   * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
@@ -13,7 +13,7 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
-  **************************
+  ******************************************************************************
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
@@ -22,12 +22,11 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+CAN_FilterTypeDef canfilterconfig;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -47,44 +46,45 @@ TIM_HandleTypeDef htim17;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-uint8_t 	 RxData[21];
-uint8_t 	 TxData[21];
-unsigned int baudrateThousand,
-			 baudrateHundred,
-			 baudrateTen,
-			 baudrateUnit;
-uint8_t      myIDstring[3];
-unsigned int myID,DLCval;
-unsigned int canBaudrate;
-uint32_t     i =0;
-uint8_t  	 Data1String[2],
-		 	 Data2String[2],
-			 Data3String[2],
-			 Data4String[2],
-			 Data5String[2],
-			 Data6String[2],
-			 Data7String[2],
-			 Data8String[2];
-unsigned int Data1,
-			 Data2,
-			 Data3,
-			 Data4,
-			 Data5,
-			 Data6,
-			 Data7,
-			 Data8;
+uint8_t 	 		RxData[21];
+uint8_t 	 		TxData[21];
+unsigned int 		baudrateThousand,
+			 	 	baudrateHundred,
+					baudrateTen,
+					baudrateUnit;
+uint8_t      		myIDstring[3];
+unsigned int 		myID;
+unsigned int 		canBaudrate;
+uint32_t     		i =0;
+uint8_t  	 		Data1String[2],
+		 	 	 	Data2String[2],
+					Data3String[2],
+					Data4String[2],
+					Data5String[2],
+					Data6String[2],
+					Data7String[2],
+					Data8String[2];
+unsigned int 		Data1,
+			 	 	Data2,
+					Data3,
+					Data4,
+					Data5,
+					Data6,
+					Data7,
+					Data8;
 CAN_TxHeaderTypeDef TxHeader;
 CAN_RxHeaderTypeDef RxHeader;
-uint32_t TxMailbox;
-uint8_t canTxData[8],canRxData[8];
+uint32_t 			TxMailbox;
+uint8_t 			canTxData[8],
+        			canRxData[8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_USART1_UART_Init(void);
 static void MX_TIM17_Init(void);
 static void MX_CAN_Init(void);
-static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -101,7 +101,65 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		 sscanf(&RxData[3],"%01d",&baudrateUnit);
 
 		 canBaudrate = (1000*baudrateThousand) + (100*baudrateHundred) + (10*baudrateTen) + (baudrateUnit);
+
+		 HAL_CAN_DeInit(&hcan);
+
+         if(canBaudrate == 800 || canBaudrate == 400 || canBaudrate == 80)
+         {
+
+        	 hcan.Instance = CAN;
+        	 hcan.Init.Prescaler = 48000.0 / (canBaudrate * 15);
+        	 hcan.Init.Mode = CAN_MODE_NORMAL;
+        	 hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
+        	 hcan.Init.TimeSeg1 = CAN_BS1_12TQ;
+        	 hcan.Init.TimeSeg2 = CAN_BS2_2TQ;
+        	 hcan.Init.TimeTriggeredMode = DISABLE;
+        	 hcan.Init.AutoBusOff = DISABLE;
+        	 hcan.Init.AutoWakeUp = DISABLE;
+        	 hcan.Init.AutoRetransmission = DISABLE;
+        	 hcan.Init.ReceiveFifoLocked = DISABLE;
+        	 hcan.Init.TransmitFifoPriority = DISABLE;
+        	 if (HAL_CAN_Init(&hcan) != HAL_OK)
+        	   {
+        	     Error_Handler();
+        	   }
+         }else
+
+         {
+
+		 hcan.Instance = CAN;
 		 hcan.Init.Prescaler = 48000.0 / (canBaudrate * 16);
+		 hcan.Init.Mode = CAN_MODE_NORMAL;
+		 hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
+		 hcan.Init.TimeSeg1 = CAN_BS1_13TQ;
+		 hcan.Init.TimeSeg2 = CAN_BS2_2TQ;
+		 hcan.Init.TimeTriggeredMode = DISABLE;
+		 hcan.Init.AutoBusOff = DISABLE;
+		 hcan.Init.AutoWakeUp = DISABLE;
+		 hcan.Init.AutoRetransmission = DISABLE;
+		 hcan.Init.ReceiveFifoLocked = DISABLE;
+		 hcan.Init.TransmitFifoPriority = DISABLE;
+
+		 if (HAL_CAN_Init(&hcan) != HAL_OK)
+		   {
+		     Error_Handler();
+		   }
+         }
+		 canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
+		 canfilterconfig.FilterBank = 13;
+		 canfilterconfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+		 canfilterconfig.FilterIdHigh = 0x0000;
+		 canfilterconfig.FilterIdLow = 0;
+		 canfilterconfig.FilterMaskIdHigh = 0x0000;
+		 canfilterconfig.FilterMaskIdLow = 0x0000;
+		 canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
+		 canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
+
+
+		 HAL_CAN_ConfigFilter(&hcan, &canfilterconfig);
+
+		 HAL_CAN_Start(&hcan);
+
 		 memset(RxData,0,21);
 	 }
 
@@ -141,7 +199,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		if(HAL_CAN_AddTxMessage(&hcan, &TxHeader, canTxData, &TxMailbox) != HAL_OK)
 		{
 			HAL_TIM_Base_Start_IT(&htim17);
-				if (i >= 40)
+				if (i >= 28)
 				{
 					Error_Handler();
 				}
@@ -154,7 +212,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		 if(HAL_CAN_AddTxMessage(&hcan, &TxHeader, canTxData, &TxMailbox) != HAL_OK)
 		 {
 		 	    HAL_TIM_Base_Start_IT(&htim17);
-		 		if (i >= 40)
+		 		if (i >= 28)
 		 		{
 		 			Error_Handler();
 		        }
@@ -202,7 +260,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		break;
 	case 6:
 		sprintf(TxData,"%03X06%02X%02X%02X%02X%02X%02X0000",RxHeader.StdId,canRxData[0],canRxData[1],canRxData[2],canRxData[3],canRxData[4],canRxData[5]);
-		HAL_UART_Transmit_IT(&huart1, TxData, sprintf(TxData,"%03X05%02X%02X%02X%02X%02X%02X0000",RxHeader.StdId,canRxData[0],canRxData[1],canRxData[2],canRxData[3],canRxData[4],canRxData[5]));
+		HAL_UART_Transmit_IT(&huart1, TxData, sprintf(TxData,"%03X06%02X%02X%02X%02X%02X%02X0000",RxHeader.StdId,canRxData[0],canRxData[1],canRxData[2],canRxData[3],canRxData[4],canRxData[5]));
 		break;
 	case 7:
 		sprintf(TxData,"%03X07%02X%02X%02X%02X%02X%02X%02X00",RxHeader.StdId,canRxData[0],canRxData[1],canRxData[2],canRxData[3],canRxData[4],canRxData[5],canRxData[6]);
@@ -256,12 +314,12 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_USART1_UART_Init();
   MX_TIM17_Init();
   MX_CAN_Init();
-  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-HAL_CAN_Start(&hcan);
+
 HAL_UART_Receive_IT(&huart1, RxData, 21);
 
 HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
@@ -353,20 +411,8 @@ static void MX_CAN_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN_Init 2 */
-  CAN_FilterTypeDef canfilterconfig;
-
-       canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
-       canfilterconfig.FilterBank = 13;
-       canfilterconfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-       canfilterconfig.FilterIdHigh = 0x0000;
-       canfilterconfig.FilterIdLow = 0;
-       canfilterconfig.FilterMaskIdHigh = 0x0000;
-       canfilterconfig.FilterMaskIdLow = 0x0000;
-       canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
-       canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
 
 
-       HAL_CAN_ConfigFilter(&hcan, &canfilterconfig);
   /* USER CODE END CAN_Init 2 */
 
 }
@@ -387,7 +433,7 @@ static void MX_TIM17_Init(void)
 
   /* USER CODE END TIM17_Init 1 */
   htim17.Instance = TIM17;
-  htim17.Init.Prescaler = 2-1;
+  htim17.Init.Prescaler = 1-1;
   htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim17.Init.Period = 53-1;
   htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
